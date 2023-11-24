@@ -1,6 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const createUniqueSlug = require("../functions/createUniqueSlug");
+const ValidationError = require("../exceptions/ValidationError");
+const { validationResult } = require("express-validator");
 
 async function index(req, res) {
 
@@ -32,7 +34,15 @@ async function show(req, res, next) {
 }
 
 
-async function store(req, res) {
+async function store(req, res, next) {
+
+  const validation = validationResult(req);
+  if (!validation.isEmpty()) {
+    return next(
+      new ValidationError("Controllare i dati inseriti", validation.array())
+    );
+  }
+
   const datiInIngresso = req.body;
   console.log(datiInIngresso);
 

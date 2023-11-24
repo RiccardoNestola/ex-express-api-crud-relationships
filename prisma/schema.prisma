@@ -20,7 +20,7 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  categoryId Int      @default(1) // relazione 1 a molti con Category
+  categoryId Int // relazione 1 a molti con Category
   category   Category @relation(fields: [categoryId], references: [id]) // relazione 1 a molti con Category
 
   tags Tag[] // Relazione molti a molti con Tag

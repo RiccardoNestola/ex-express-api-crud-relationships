@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { body } = require('express-validator');
 const postsController = require('../controllers/posts');
 
 // GET /posts
@@ -10,7 +11,13 @@ router.get('/', postsController.index);
 router.get('/:slug', postsController.show);
 
 // POST /posts
-router.post('/', postsController.store);
+router.post(
+    '/',
+    body('title').notEmpty().withMessage('Il titolo è richiesto'),
+    body('slug').notEmpty().withMessage('Lo slug è richiesto').isSlug().withMessage('Lo slug non è valido'),
+    body('content').notEmpty().withMessage('Il contenuto è richiesto'),
+    postsController.store
+    );
 
 // PUT /posts/:id
 router.put('/:id', postsController.update);

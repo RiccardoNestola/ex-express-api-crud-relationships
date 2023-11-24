@@ -15,9 +15,9 @@ Implementare le validazioni tramite Schema e middleware dedicato.
 const express = require("express");
 const dotenv = require("dotenv");
 const postsRouter = require("./routers/posts");
-const errorsHandler = require("./middlewares/errorsHandler");
+/* const errorsHandler = require("./middlewares/errorsHandler");
 const routeNotFound = require("./middlewares/routeNotFound");
-
+ */
 
 const app = express();
 
