@@ -4,32 +4,33 @@ const createUniqueSlug = require("../functions/createUniqueSlug");
 
 async function index(req, res) {
 
-  const filters = req.query.filter;
-  const queryFilter = {}
-
   const data = await prisma.post.findMany({
-    where: queryFilter
   });
 
   return res.json(data);
 }
 
 async function show(req, res, next) {
-  // const id = req.params.id;
-  const { slug } = req.params;
 
-  const data = await prisma.post.findUnique({
-    where: {
-      slug: slug,
-    },
-  });
+  try {
 
-  if (!data) {
-    next (new Error("Not found"));
+    const { slug } = req.params;
+    const data = await prisma.post.findUnique({
+      where: {
+        slug: slug,
+      },
+    });
+    
+    if (!data) {
+      throw new Error("Post not found");
+    }
+    
+    return res.json(data);
+  } catch (error) {
+    next(error);
   }
-
-  return res.json(data);
 }
+
 
 async function store(req, res) {
   const datiInIngresso = req.body;
@@ -38,7 +39,6 @@ async function store(req, res) {
   if (!datiInIngresso || !datiInIngresso.title) {
     return res.status(400).send("Titolo del post mancante o dati di ingresso non validi");
   }
-
 
   const UniqueSlug = createUniqueSlug(datiInIngresso.title);
 
@@ -59,40 +59,62 @@ async function store(req, res) {
   }
 }
 
+
 async function update(req, res) {
-  const id = req.params.id;
+  const { id } = req.params;
   const datiInIngresso = req.body;
 
-  // controllo se qul post esiste
-  const post = await prisma.post.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-  });
+  console.log("Id ricevuto:", id);
+  console.log("Dati in ingresso:", datiInIngresso);
 
-  if (!post) {
-    throw new Error('Not found');
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    console.log("Post trovato:", post);
+
+    if (!post) {
+      console.error('Post non trovato per:', id);
+      return res.status(404).send('Not found');
+    }
+
+    const postAggiornato = await prisma.post.update({
+      data: datiInIngresso,
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    console.log("Post aggiornato:", postAggiornato);
+
+    return res.json(postAggiornato);
+  } catch (error) {
+    console.error("Errore durante l'aggiornamento del post:", error);
+    return res.status(500).send('Errore interno del server');
   }
-
-  const postAggiornato = await prisma.post.update({
-    data: datiInIngresso,
-    where: {
-      id: parseInt(id),
-    },
-  })
-
-  return res.json(postAggiornato)
 }
+
 
 async function destroy(req, res) {
-  await prisma.post.delete({
-    where: {
-      id: parseInt(req.params.id),
-    },
-  });
+  const { id } = req.params;
 
-  return res.json({ message: "Post eliminato" });
+  try {
+    await prisma.post.delete({
+      where: {
+        id: parseInt(id)
+      },
+    });
+
+    return res.json({ message: "Post eliminato" });
+  } catch (error) {
+    console.error("Errore durante l'eliminazione del post:", error);
+    return res.status(500).send('Errore interno del server');
+  }
 }
+
 
 module.exports = {
   index,

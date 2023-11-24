@@ -34,9 +34,9 @@ app.use(express.json()); // Per parsing di JSON
 app.use("/posts", postsRouter);
 
 //errori
-app.use(routeNotFound);
+/* app.use(routeNotFound);
 
-app.use(errorsHandler);
+app.use(errorsHandler); */
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
