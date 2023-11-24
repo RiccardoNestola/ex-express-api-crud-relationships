@@ -1,21 +1,16 @@
 /* Esercizio
-Iniziamo a creare le API per il nostro blog. 
-Iniziate con un nuovo progetto Express + Prisma.Potete utilizzare lo schema Prisma che avete creato nell’esercizio di ieri.
-Definizione degli endpoint
-Vi chiediamo di definire i seguenti endpoint:
-POST / posts per creare un nuovo post.
-GET / posts /:slug per recuperare un post utilizzando il suo slug.
-GET / posts per recuperare tutti i post presenti nel database, con la possibilità di filtrare per:
-    - Post pubblicati.
-    - Post che contengono una determinata parola nel titolo o nel contenuto.
+per l’esercizio di oggi, partendo dal lavoro svolto ieri, aggiungeremo i seguenti modelli con le relative relazioni col modello Post:
+Category(one - to - many): Ogni Post deve avere una categoria associata, e una categoria può avere più Post associati.
+    Tags(many - to - many): Ogni Post può avere uno o più tag associati, e ogni Tag può avere uno o più Post associati.
+        Successivamente, aggiungete la validazione dei dati utilizzando Express Validator alle rotte del vostro blog.
+            Infine, assicuratevi che le richieste di lettura GET restituiscano anche la categoria e i tags di ogni singolo Post.
+Piccolo suggerimento: Se avete già popolato la tabella dei posts indicate il campo categoryId come nullable o un valore di default altrimenti avreste un errore in fase di migrazione.
+    BONUS:
+Implementare le operazioni di CRUD per il modello Category.
+Implementare le operazioni di CRUD per il modello Tag.
+Implementare le validazioni tramite Schema e middleware dedicato.
+ */
 
-PUT / posts /:slug per aggiornare un post.
-DELETE / posts /:slug per eliminare un post.
-
-BONUS:
-Implementare la paginazione.
-Gestite gli errori, restituendo uno stato HTTP 404 e un messaggio di errore, nel caso in cui una rotta non sia stata trovata.
-Gestite gli errori, restituendo uno stato HTTP 500 e un messaggio di errore, nel caso in cui venga sollevata un’eccezione dal Prisma Client. */
 
 const express = require("express");
 const dotenv = require("dotenv");
